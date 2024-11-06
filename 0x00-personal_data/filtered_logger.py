@@ -3,8 +3,9 @@
 from typing import List
 import re
 
-def filter_datum(fields: List[int], redaction: str,
-    message: str, separator: str ) -> List[str]:
+
+def filter_datum(fields: List[int], redaction: str, message: str,
+                 separator: str) -> List[str]:
     """
     Returns the log message obfuscated
     Args:
@@ -17,7 +18,7 @@ def filter_datum(fields: List[int], redaction: str,
     use re.sub to perform the substitutuion with a single regex
     """
     # Text is seperated by ;, hence regex will start from '=' to ';'
-    new_fields: List[str] = [] 
+    new_fields: List[str] = []
     for field in fields:
         pattern: str = fr"{re.escape(field)}=.*?(?={re.escape(separator)}|$)"
         new_fields.append(re.sub(pattern, f"{field}={redaction}", message))
