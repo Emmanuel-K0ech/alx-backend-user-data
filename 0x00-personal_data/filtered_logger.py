@@ -5,7 +5,7 @@ import logging
 import re
 
 logging.basicConfig(filename="record.log", level=logging.INFO)
-PII_FIELDS: Tuple[str, ...] = ("name", "email", "ssn", "password", "ip")
+PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
