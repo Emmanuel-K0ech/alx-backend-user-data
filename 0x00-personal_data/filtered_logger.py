@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """ Module filtered_logger.py """
 from typing import List
+import logging
 import re
+
+logging.basicConfig(filename="record.log", level=logging.INFO)
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -22,3 +25,25 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         pattern = r"({}=)([^{}]+)".format(field, separator)
         message = re.sub(pattern, r"\1" + redaction, message)
     return message
+
+
+class RedactingFormatter(logging.Formatter):
+    """Redacting Formatter class """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    logging.basicConfig(filename="record.log", level=logging.INFO,
+                        format=f"FORMAT")
+
+    def __init__(self, fields: List[str]):
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        """ uses filter_datum() to redact fields specified"""
+        redacted_msg = filter_datum(self.fields, self.REDACTION,
+                                    record.msg, self.SEPARATOR)
+        record.msg = redacted_msg
+        return super().format(record)
