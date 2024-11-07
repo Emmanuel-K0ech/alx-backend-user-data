@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """ Module filtered_logger.py """
-from typing import List
+from typing import List, Tuple
 import logging
 import re
 
 logging.basicConfig(filename="record.log", level=logging.INFO)
+PII_FIELDS: Tuple[str, ...] = ("name", "email", "ssn", "password", "ip")
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -47,3 +48,14 @@ class RedactingFormatter(logging.Formatter):
                                     record.msg, self.SEPARATOR)
         record.msg = redacted_msg
         return super().format(record)
+
+
+def get_logger() -> logging.Logger:
+    """ Returns a logging.Logger object"""
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    log_formatter = RedactingFormatter(PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(log_formatter)
+    logger.addHandler(stream_handler)
+    return logger
