@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+"""
+Basic Authentication class
+"""
+from api.v1.auth.auth import Auth
+
+
+class BasicAuth(Auth):
+    """ Basic Authentication Inheriting from Auth """
+    pass
